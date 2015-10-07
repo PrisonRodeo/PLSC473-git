@@ -12,9 +12,9 @@
 #
 # Load necessary R packages:
 
-install.packages("devtools")
+# install.packages("devtools")
 library("devtools")
-install_github("aaboyles/hadleyverse")
+# install_github("aaboyles/hadleyverse")
 library(hadleyverse)
 
 # Alternatively, take out the "#"s and run this:
@@ -23,7 +23,8 @@ library(hadleyverse)
 
 # Read in "master" (votes + biographical) data:
 
-LOP <- c("RCurl")  # All this is just to read the data from github
+LOP <- c("RCurl")  # All this is just to read the data 
+                   #  from github
 NP <- LOP[!(LOP %in% installed.packages()[,"Package"])]
 if(length(NP)) install.packages(NP)
 library(RCurl)
@@ -39,8 +40,8 @@ Justices <- read.csv(text = url) # read the "justices" data
 # Votes<-read.csv("PLSC473Votes.csv")
 # Justices<-read.csv("PLSC473Justices.csv")
 
-# Now, MERGE those two together. The variable "JID" allows you to
-# do this:
+# Now, MERGE those two together. The variable "JID" 
+# allows you to do this:
 
 Master <- merge(Votes,Justices,by=c("JID"))
 
@@ -63,7 +64,7 @@ table(Data$direction)
 # That is coded strangely, with liberal votes coded as "1"
 # and conservative as "2". Let's make it better:
 
-Data$LiberalVote <- 1 - (Data$direction-1)
+Data$LiberalVote <- Data$direction-1
 
 # That should give us a variable that =1 if the justice 
 # voted "liberally" and 0 if not. Let's check:
@@ -95,7 +96,7 @@ with(Data, xtabs(~childsur+Urban))
 
 #  - Education cases are harder to locate; for now, we'll just
 # look at those with issue code 20050 (school desegregation),
-# 30180 (parochaid), and 20290 (immigrants' access to edcation).
+# 30180 (parochaid), and 20290 (immigrants' access to education).
 
 #  - Crime is probably best just done using issueArea code #1
 # (criminal cases)
@@ -180,7 +181,7 @@ barplot(UrbanMeans*100,cex.names=0.6,
 with(Data, prop.table(xtabs(~LiberalVote+Urban),2)) * 100
 
 # This indicates that justices from rural backgrounds 
-# vote liberally in all cases roughly 42 percent of
+# vote liberally in all cases roughly 58 percent of
 # the time, while those from urban backgrounds vote
 # liberally nearly 50 percent of the time.
 #
