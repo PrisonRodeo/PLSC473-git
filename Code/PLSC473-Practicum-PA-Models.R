@@ -12,22 +12,13 @@
 #
 # Load necessary R packages:
 
-# install.packages("devtools")
-library("devtools")
-# install_github("aaboyles/hadleyverse")
-library(hadleyverse)
-
-# Alternatively, take out the "#"s and run this:
-# install.packages(dplyr)
-# library(dplyr)
-
-# Read in "master" (votes + biographical) data:
-
 LOP <- c("RCurl")  # All this is just to read the data 
                    #  from github
 NP <- LOP[!(LOP %in% installed.packages()[,"Package"])]
 if(length(NP)) install.packages(NP)
 library(RCurl)
+
+# Read in "master" (votes + biographical) data:
 
 url <- getURL("https://raw.githubusercontent.com/PrisonRodeo/PLSC473-git/master/Data/PLSC473Votes.csv")
 Votes <- read.csv(text = url) # read the "votes" data
@@ -138,11 +129,7 @@ SexData <- Data[Data$keep==1,]  # Gender
 # start with liberal voting percentages in each type
 # of case:
 
-prop.table(table(RaceData$LiberalVote))*100
-prop.table(table(EdData$LiberalVote))*100
-prop.table(table(CrimeData$LiberalVote))*100
-prop.table(table(SexData$LiberalVote))*100
-
+S
 # We can do the same thing with plots:
 
 barplot(prop.table(table(RaceData$LiberalVote))*100,
@@ -195,4 +182,127 @@ with(SexData, prop.table(xtabs(~LiberalVote+Urban),2)) * 100
 
 # Next time, we'll go into more detail on the analyses,
 # and also talk about presentation of findings.
+
+################################################################
+# The first day stopped here. The second one starts
+# below.
+################################################################
+
+# Now we'll walk through the actual analyses and 
+# write-up of the results. The structure follows what
+# was on the slides from the October 6 class: Begin with
+# the question / theory, then discuss the hypothesis,
+# then the data and the measurement, then 
+#
+# One thing to recall is how to create graphics files.
+# We put a "wrapper" around a graphics command that 
+# creates a file. Type
+#
+?png
+#
+# For more details. So, to create a PNG file of a 
+# barplot of the liberal voting percentages in 
+# racial discrimination cases, we use: 
+
+png("RaceBarplot.png",640,640)
+barplot(prop.table(table(RaceData$LiberalVote))*100,
+        names.arg=c("Conservative","Liberal"))
+title(main="Liberal Voting Percentage: Racial 
+      Discrimination Cases")
+dev.off()
+
+# For our short paper, sometimes it's useful to 
+# combine several plots into a single file. We
+# can do that using -mfrow-:
+
+png("OutcomesBarplot.png",720,720)
+par(mfrow=c(2,2)) # draw four figures: 2 rows, 2 cols
+barplot(prop.table(table(RaceData$LiberalVote))*100,
+        names.arg=c("Conservative","Liberal"))
+title(main="Liberal Voting Percentage: Racial 
+      Discrimination Cases") # Race cases
+barplot(prop.table(table(EdData$LiberalVote))*100,
+        names.arg=c("Conservative","Liberal"))
+title(main="Liberal Voting Percentage: Education
+      Cases") # Education cases
+barplot(prop.table(table(CrimeData$LiberalVote))*100,
+        names.arg=c("Conservative","Liberal"))
+title(main="Liberal Voting Percentage: Criminal
+      Cases") # Education cases
+barplot(prop.table(table(SexData$LiberalVote))*100,
+        names.arg=c("Conservative","Liberal"))
+title(main="Liberal Voting Percentage: Gender
+      Discrimination Cases") # Gender cases
+par(mfrow=c(1,1)) # reset this to original
+dev.off()
+
+# This is Figure 1 in the (October 8) slides.
+#
+# We'll also want to describe the justices in terms
+# of urban vs. rural. We can do this by simply
+# going back to the "Justices" data:
+
+Justices$Urban<-ifelse(Justices$childsur=="urban (l",1,0)
+
+# Now plot that:
+
+png("UrbanBarplot.png",480,480)
+barplot(prop.table(table(Justices$Urban))*100,
+        names.arg=c("Non-Urban","Urban"))
+title(main="Urban and Non-Urban Backgrounds of the
+      Justices, 1946-2014 (N=37)") # Gender cases
+dev.off()
+
+# This is Figure 2 in the slides.
+#
+# Finally, we want to analyze the association 
+# between the two variables. First, the crosstabs:
+
+RaceCorr<-with(RaceData, prop.table(xtabs(~LiberalVote+Urban),2)) * 100
+EdCorr<-with(EdData, prop.table(xtabs(~LiberalVote+Urban),2)) * 100
+CrimeCorr<-with(CrimeData, prop.table(xtabs(~LiberalVote+Urban),2)) * 100
+SexCorr<-with(SexData, prop.table(xtabs(~LiberalVote+Urban),2)) * 100
+
+# We can use the values in these objects to calculate
+# the differences in liberal voting between urban
+# and rural justices. In particular, the second "row"
+# of each crosstab has the percentage of times each
+# type of justice case a liberal vote: 
+
+RaceCorr
+
+# This lets us calculate the differences:
+
+RaceCorr[2,2]-RaceCorr[2,1]
+EdCorr[2,2]-EdCorr[2,1]
+CrimeCorr[2,2]-CrimeCorr[2,1]
+SexCorr[2,2]-SexCorr[2,1]
+
+# Now, t-tests for differences in the means
+
+with(RaceData, t.test(LiberalVote~Urban))
+with(EdData, t.test(LiberalVote~Urban))
+with(CrimeData, t.test(LiberalVote~Urban))
+with(SexData, t.test(LiberalVote~Urban))
+
+# Alternatively, we could have presented the same
+# results as a four-way set of barplots:
+
+png("VoteByUrban.png",720,720)
+par(mfrow=c(2,2)) # 2x2 graphs
+barplot(RaceCorr[2,],names.arg=c("Rural","Urban"))
+title(main="Liberal Voting Percentages: Racial
+      Discrimination Cases (t = 5.6)") # Race cases
+barplot(EdCorr[2,],names.arg=c("Rural","Urban"))
+title(main="Liberal Voting Percentages: Education
+      Cases (t = 3.4)") # Race cases
+barplot(CrimeCorr[2,],names.arg=c("Rural","Urban"))
+title(main="Liberal Voting Percentages: Criminal 
+      Cases (t = 8.3)") # Race cases
+barplot(SexCorr[2,],names.arg=c("Rural","Urban"))
+title(main="Liberal Voting Percentages: Sex
+      Discrimination Cases (t = 2.1)") # Race cases
+par(mfrow=c(1,1)) # reset
+dev.off()
+
 
