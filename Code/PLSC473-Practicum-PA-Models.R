@@ -129,8 +129,12 @@ SexData <- Data[Data$keep==1,]  # Gender
 # start with liberal voting percentages in each type
 # of case:
 
-S
-# We can do the same thing with plots:
+prop.table(table(RaceData$LiberalVote))*100
+prop.table(table(EdData$LiberalVote))*100
+prop.table(table(CrimeData$LiberalVote))*100
+prop.table(table(SexData$LiberalVote))*100
+
+# We can do the same thing with plots, e.g.:
 
 barplot(prop.table(table(RaceData$LiberalVote))*100,
         names.arg=c("Conservative","Liberal"))
