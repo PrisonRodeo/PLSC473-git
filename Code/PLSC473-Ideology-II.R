@@ -111,11 +111,11 @@ c(CivR1,EconR1,CivR2,EconR2,CivR3,EconR3)
 #
 # We can do the same plots Segal et al. did, for the 
 # post-Truman justices. 
-#
+# 
 # First, subset the data:
 
 CivNew<-Civ[Civ$presname!="roosevelt, franklin delano" &
-                Econ$presname!="truman, harry s.",]
+                Civ$presname!="truman, harry s.",]
 
 EconNew<-Econ[Econ$presname!="roosevelt, franklin delano" &
                     Econ$presname!="truman, harry s.",]
