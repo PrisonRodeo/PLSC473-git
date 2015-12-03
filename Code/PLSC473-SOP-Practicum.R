@@ -145,7 +145,7 @@ with(StatCases, t.test(Prez~LiberalVote))
 #
 #
 #
-# If you're still reading this, here's are logistic regressions
+# If you're still reading this, here are logistic regressions
 # of justices' votes on their own ideology, that of the president,
 # that of the Senate, and the interaction of the former with
 # the latter two for all cases, and split between statutory and
